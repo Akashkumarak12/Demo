@@ -9,9 +9,14 @@
 <h1>Bike Bully</h1>
 
 
+
+
 <table class="table">
     @if (ViewBag.Username != null)
     {
+        <p>
+            <a asp-action="SearchStudent">Search</a>
+        </p>
         <thead>
             <tr>
                 <th>
@@ -32,9 +37,9 @@
                @* <th>
                     @Html.DisplayNameFor(model => model.CategoryId)
                 </th>*@
-                <th>
+               @* <th>
                     @Html.DisplayNameFor(model => model.Description)
-                </th>
+                </th>*@
                @* <th>
                     @Html.DisplayNameFor(model => model.IdNavigation)
                 </th>*@
@@ -64,9 +69,9 @@
                    @* <td>
                         @Html.DisplayFor(modelItem => item.CategoryId)
                     </td>*@
-                    <td>
+                   @* <td>
                         @Html.DisplayFor(modelItem => item.Description)
-                    </td>
+                    </td>*@
                    @* <td>
                         @Html.DisplayFor(modelItem => item.IdNavigation.Id)
                     </td>*@
@@ -82,11 +87,12 @@
     else
     {
     <p>
-        <a asp-action="Create">Add Product</a>
+        <a asp-action="Create">Add Product|</a>
+            <a asp-controller="Vendor" asp-action="Index">Vendors|</a>
+            <a asp-action="SearchStudent">Search</a>
+  
+        
     </p>
-        <p>
-            <a asp-controller="Vendor" asp-action="Index">Vendors</a>
-        </p>
         <thead>
             <tr>
                 <th>
@@ -108,9 +114,9 @@
                 @*<th>
                     @Html.DisplayNameFor(model => model.CategoryId)
                 </th>*@
-                <th>
+             @*   <th>
                     @Html.DisplayNameFor(model => model.Description)
-                </th>
+                </th>*@
                 <th>
                     @Html.DisplayNameFor(model => model.IdNavigation)
                 </th>
@@ -140,9 +146,9 @@
                     @*<td>
                         @Html.DisplayFor(modelItem => item.CategoryId)
                     </td>*@
-                    <td>
+                   @* <td>
                         @Html.DisplayFor(modelItem => item.Description)
-                    </td>
+                    </td>*@
                     <td>
                         @Html.DisplayFor(modelItem => item.IdNavigation.Id)
                     </td>

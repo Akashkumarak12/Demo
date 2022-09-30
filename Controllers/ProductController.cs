@@ -142,6 +142,50 @@ namespace Demo.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+        public async Task<IActionResult> SearchStudentAsync(string Search, string SortOrder, int? PageNumber, string CurrentFilter)
+        {
+            ViewData["CurrentSort"] = SortOrder;
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(SortOrder) ? "name_desc" : "";
+
+            if (Search != null)
+            {
+                PageNumber = 1;
+            }
+            else
+            {
+                Search = CurrentFilter;
+            }
+
+            ViewData["CurrentFilter"] = Search;
+
+            var students = from s in _context.Product1s
+                           select s;
+            if (!string.IsNullOrEmpty(Search))
+            {
+                students = students.Where(s => s.ProductName == Search );
+            }
+
+            //else if (!string.IsNullOrEmpty(Search))
+            //{
+            //    students = students.Where(s => s.Brand == Search);
+            //}
+            //else
+            //{
+
+            //}
+            switch (SortOrder)
+            {
+                case "name_desc":
+                    students = students.OrderByDescending(s => s.ProductName);
+                    break;
+                default:
+                    students = students.OrderBy(s => s.ProductName);
+                    break;
+            }
+            int pageSize = 3;
+            return View(await PaginatedList<Product1>.CreateAsync(students.AsNoTracking(), PageNumber ?? 1, pageSize));
+        }
+
 
         private bool Product1Exists(int id)
         {

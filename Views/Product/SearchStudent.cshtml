@@ -1,0 +1,218 @@
+﻿@model PaginatedList<Demo.Models.Product1>
+@inject IHttpContextAccessor HttpContextAccesor
+
+@{
+    //ViewData["Title"] = "Bike Bully";
+    ViewBag.Username = @HttpContextAccesor.HttpContext.Session.GetString("Username");
+    ViewBag.name = @HttpContextAccesor.HttpContext.Session.GetString("name");
+}
+
+@{
+    ViewData["Title"] = "SearchProduct";
+    //Layout = "Teacher_layout";
+}
+
+@*<h1>SearchStudent</h1>*@
+
+
+
+@using (Html.BeginForm("SearchStudent", "Product", FormMethod.Post))
+{
+    <div>
+        Search by ProductName @Html.TextBox("Search")
+        <input id="Submit" type="submit" value="Search" />
+        <a asp-action="SearchStudent">Back to details</a>
+    </div>
+}
+
+<table class="table">
+    @if (ViewBag.Username != null)
+    {
+        <thead>
+            <tr>
+                @* <th>
+                Student Id
+            </th>*@
+                <th>
+                    <a asp-action="SearchStudent" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-CurrentFilter="@ViewData["CurrentFilter"]">ProductName</a>
+                </th>
+                @*  <th>
+               ProductName
+            </th>*@
+                <th>
+                    Image
+
+                </th>
+                <th>
+                    Brand
+                </th>
+                <th>
+                    Price
+                </th>
+              @*  <th>
+                    Stock
+                </th>*@
+                @*<th>
+            @Html.DisplayNameFor(model => model.CategoryId)
+            </th>*@
+                @*   <th>
+            @Html.DisplayNameFor(model => model.Description)
+            </th>*@
+             @*   <th>
+                    IdNavigation
+                </th>*@
+                @*<th>
+            @Html.DisplayNameFor(model => model.Password)
+            </th>*@
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ProductName)
+                    </td>
+                    <td>
+                        @*  @Html.DisplayFor(modelItem => item.Image)*@
+                        <img src="/images/@item.Image" alt="Image" height="100" width="100" />
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Brand)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Price)
+                    </td>
+                  @*  <td>
+                        @Html.DisplayFor(modelItem => item.Stock)
+                    </td>*@
+                    @*<td>
+            @Html.DisplayFor(modelItem => item.CategoryId)
+            </td>*@
+                    @* <td>
+            @Html.DisplayFor(modelItem => item.Description)
+            </td>*@
+                    @*  <td>
+                    @Html.DisplayFor(modelItem => item.IdNavigation)
+                </td>*@
+                    @*<td>
+            @Html.DisplayFor(modelItem => item.Password)
+            </td>
+            <td>
+            <a asp-action="Edit" asp-route-id="@item.StudentId">Edit</a> |
+            <a asp-action="Details" asp-route-id="@item.StudentId">Details</a> |
+            <a asp-action="Delete" asp-route-id="@item.StudentId">Delete</a>
+            </td>*@
+                </tr>
+            }
+        </tbody>
+    }
+    else
+    {
+        
+            <thead>
+                <tr>
+                    @* <th>
+            Student Id
+            </th>*@
+                    <th>
+                        <a asp-action="SearchStudent" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-CurrentFilter="@ViewData["CurrentFilter"]">ProductName</a>
+                    </th>
+                    @*  <th>
+            ProductName
+            </th>*@
+                    <th>
+                        Image
+
+                    </th>
+                    <th>
+                        Brand
+                    </th>
+                    <th>
+                        Price
+                    </th>
+                    <th>
+                        Stock
+                    </th>
+                    @*<th>
+            @Html.DisplayNameFor(model => model.CategoryId)
+            </th>*@
+                    @*   <th>
+            @Html.DisplayNameFor(model => model.Description)
+            </th>*@
+                   @* <th>
+                        IdNavigation
+                    </th>*@
+                    @*<th>
+            @Html.DisplayNameFor(model => model.Password)
+            </th>*@
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ProductName)
+                        </td>
+                        <td>
+                            @*  @Html.DisplayFor(modelItem => item.Image)*@
+                            <img src="/images/@item.Image" alt="Image" height="100" width="100" />
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Brand)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Price)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Stock)
+                        </td>
+                        @*<td>
+            @Html.DisplayFor(modelItem => item.CategoryId)
+            </td>*@
+                        @* <td>
+            @Html.DisplayFor(modelItem => item.Description)
+            </td>*@
+                        @*  <td>
+            @Html.DisplayFor(modelItem => item.IdNavigation)
+            </td>*@
+                        @*<td>
+            @Html.DisplayFor(modelItem => item.Password)
+            </td>
+            <td>
+            <a asp-action="Edit" asp-route-id="@item.StudentId">Edit</a> |
+            <a asp-action="Details" asp-route-id="@item.StudentId">Details</a> |
+            <a asp-action="Delete" asp-route-id="@item.StudentId">Delete</a>
+            </td>*@
+                    </tr>
+                }
+            </tbody>
+
+    }
+</table>
+<p></p>
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<a asp-action="SearchStudent"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex - 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @prevDisabled">
+    Previous
+</a>
+
+<a asp-action="SearchStudent"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex + 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @nextDisabled">
+    Next
+</a>
+<p></p>
+<a asp-action="Index">Back to main</a>
