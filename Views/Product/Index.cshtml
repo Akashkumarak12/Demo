@@ -4,6 +4,14 @@
 @{
     ViewData["Title"] = "Bike Bully";
     ViewBag.Username = @HttpContextAccesor.HttpContext.Session.GetString("Username");
+    if (ViewBag.Username != null)
+    {
+        Layout = "ULayout";
+    }
+    else
+    {
+        Layout = "ALayout";
+    }
 }
 
 <h1>Bike Bully</h1>
@@ -14,9 +22,7 @@
 <table class="table">
     @if (ViewBag.Username != null)
     {
-        <p>
-            <a asp-action="SearchStudent">Search</a>
-        </p>
+      
         <thead>
             <tr>
                 <th>
@@ -76,7 +82,7 @@
                         @Html.DisplayFor(modelItem => item.IdNavigation.Id)
                     </td>*@
                     <td>
-                        <a asp-action="Edit" asp-route-id="@item.ProductId">Buy</a> |
+                        <a asp-action="Buynow" asp-route-id="@item.ProductId">Buy Now</a> |
                         <a asp-action="Details" asp-route-id="@item.ProductId">Details</a> |
                         @*<a asp-action="Delete" asp-route-id="@item.ProductId">Delete</a>*@
                     </td>
@@ -87,9 +93,9 @@
     else
     {
     <p>
-        <a asp-action="Create">Add Product|</a>
+        @*<a asp-action="Create">Add Product|</a>
             <a asp-controller="Vendor" asp-action="Index">Vendors|</a>
-            <a asp-action="SearchStudent">Search</a>
+            <a asp-action="SearchStudent">Search</a>*@
   
         
     </p>

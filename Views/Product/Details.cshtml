@@ -4,6 +4,14 @@
 @{
     ViewData["Title"] = "Bike Bully";
     ViewBag.Username = @HttpContextAccesor.HttpContext.Session.GetString("Username");
+    if (ViewBag.Username != null)
+    {
+        Layout = "ULayout";
+    }
+    else
+    {
+        Layout = "ALayout";
+    }
 }
 
 <h1>Details</h1>
@@ -67,7 +75,7 @@
         </dl>
         </div>
         <div>
-            <a asp-action="Edit" asp-route-id="@Model?.ProductId">Buy Now</a> |
+            <a asp-action="Buynow" asp-route-id="@Model?.ProductId">Buy Now</a> |
             <a asp-action="Index">Back to List</a>
         </div>
     }

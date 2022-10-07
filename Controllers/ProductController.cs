@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Demo.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace Demo.Controllers
 {
@@ -16,39 +17,93 @@ namespace Demo.Controllers
         public ProductController(BikeContext context)
         {
             _context = context;
+           
         }
+
 
         // GET: Product
         public async Task<IActionResult> Index()
         {
-            var bikeContext = _context.Product1s.Include(p => p.IdNavigation);
-            return View(await bikeContext.ToListAsync());
+            ViewBag.UserName = HttpContext.Session.GetString("Username");
+            ViewBag.name = HttpContext.Session.GetString("name");
+
+            if (ViewBag.UserName != null)
+            {
+                var bikeContext = _context.Product1s.Include(p => p.IdNavigation);
+                return View(await bikeContext.ToListAsync());
+            }
+            else if (ViewBag.name != null)
+            {
+                var bikeContext = _context.Product1s.Include(p => p.IdNavigation);
+                return View(await bikeContext.ToListAsync());
+            }
+            else
+            {
+                return RedirectToAction("Login", "Login");
+            }
         }
 
         // GET: Product/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Product1s == null)
-            {
-                return NotFound();
-            }
+            ViewBag.UserName = HttpContext.Session.GetString("Username");
+            ViewBag.name = HttpContext.Session.GetString("name");
 
-            var product1 = await _context.Product1s
-                .Include(p => p.IdNavigation)
-                .FirstOrDefaultAsync(m => m.ProductId == id);
-            if (product1 == null)
+            if (ViewBag.UserName != null)
             {
-                return NotFound();
-            }
+                if (id == null || _context.Product1s == null)
+                {
+                    return NotFound();
+                }
 
-            return View(product1);
+                var product1 = await _context.Product1s
+                    .Include(p => p.IdNavigation)
+                    .FirstOrDefaultAsync(m => m.ProductId == id);
+                //HttpContext.Session.SetInt32("Productid", product1.ProductId);
+                //HttpContext.Session.SetInt32("Price", (int)product1.Price);
+                if (product1 == null)
+                {
+                    return NotFound();
+                }
+
+                return View(product1);
+            }
+            else if (ViewBag.name != null)
+            {
+                if (id == null || _context.Product1s == null)
+                {
+                    return NotFound();
+                }
+
+                var product1 = await _context.Product1s
+                    .Include(p => p.IdNavigation)
+                    .FirstOrDefaultAsync(m => m.ProductId == id);
+                if (product1 == null)
+                {
+                    return NotFound();
+                }
+
+                return View(product1);
+            }
+            else
+            {
+                return RedirectToAction("Login", "Login");
+            }
         }
 
         // GET: Product/Create
         public IActionResult Create()
         {
-            ViewData["Id"] = new SelectList(_context.Categories, "Id", "Id");
-            return View();
+            ViewBag.name = HttpContext.Session.GetString("name");
+             if (ViewBag.name != null)
+            {
+                ViewData["Id"] = new SelectList(_context.Categories, "Id", "Id");
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Login", "Login");
+            }
         }
 
         // POST: Product/Create
@@ -71,18 +126,28 @@ namespace Demo.Controllers
         // GET: Product/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Product1s == null)
-            {
-                return NotFound();
-            }
+            //ViewBag.UserName = HttpContext.Session.GetString("Username");
+            ViewBag.name = HttpContext.Session.GetString("name");
 
-            var product1 = await _context.Product1s.FindAsync(id);
-            if (product1 == null)
+            if (ViewBag.name != null)
             {
-                return NotFound();
+                if (id == null || _context.Product1s == null)
+                {
+                    return NotFound();
+                }
+
+                var product1 = await _context.Product1s.FindAsync(id);
+                if (product1 == null)
+                {
+                    return NotFound();
+                }
+                ViewData["Id"] = new SelectList(_context.Categories, "Id", "Id", product1.Id);
+                return View(product1);
             }
-            ViewData["Id"] = new SelectList(_context.Categories, "Id", "Id", product1.Id);
-            return View(product1);
+            else
+            {
+                return RedirectToAction("Login", "Login");
+            }
         }
 
         // POST: Product/Edit/5
@@ -108,20 +173,29 @@ namespace Demo.Controllers
         // GET: Product/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Product1s == null)
-            {
-                return NotFound();
-            }
+            ViewBag.name = HttpContext.Session.GetString("name");
 
-            var product1 = await _context.Product1s
-                .Include(p => p.IdNavigation)
-                .FirstOrDefaultAsync(m => m.ProductId == id);
-            if (product1 == null)
+            if (ViewBag.name != null)
             {
-                return NotFound();
-            }
+                if (id == null || _context.Product1s == null)
+                {
+                    return NotFound();
+                }
 
-            return View(product1);
+                var product1 = await _context.Product1s
+                    .Include(p => p.IdNavigation)
+                    .FirstOrDefaultAsync(m => m.ProductId == id);
+                if (product1 == null)
+                {
+                    return NotFound();
+                }
+
+                return View(product1);
+            }
+            else
+            {
+                return RedirectToAction("Login", "Login");
+            }
         }
 
         // POST: Product/Delete/5
@@ -146,44 +220,109 @@ namespace Demo.Controllers
         {
             ViewData["CurrentSort"] = SortOrder;
             ViewData["NameSortParm"] = String.IsNullOrEmpty(SortOrder) ? "name_desc" : "";
+            ViewBag.UserName = HttpContext.Session.GetString("Username");
+            ViewBag.name = HttpContext.Session.GetString("name");
 
-            if (Search != null)
+            if (ViewBag.UserName != null)
             {
-                PageNumber = 1;
+
+                if (Search != null)
+                {
+                    PageNumber = 1;
+                }
+                else
+                {
+                    Search = CurrentFilter;
+                }
+
+
+                ViewData["CurrentFilter"] = Search;
+
+                var students = from s in _context.Product1s
+                               select s;
+                if (!string.IsNullOrEmpty(Search))
+                {
+                    students = students.Where(s => s.ProductName == Search);
+                }
+
+                //else if (!string.IsNullOrEmpty(Search))
+                //{
+                //    students = students.Where(s => s.Brand == Search);
+                //}
+                //else
+                //{
+
+                //}
+                switch (SortOrder)
+                {
+                    case "name_desc":
+                        students = students.OrderByDescending(s => s.ProductName);
+                        break;
+                    default:
+                        students = students.OrderBy(s => s.ProductName);
+                        break;
+                }
+                int pageSize = 3;
+                return View(await PaginatedList<Product1>.CreateAsync(students.AsNoTracking(), PageNumber ?? 1, pageSize));
+            }
+            if (ViewBag.name != null)
+            {
+
+                if (Search != null)
+                {
+                    PageNumber = 1;
+                }
+                else
+                {
+                    Search = CurrentFilter;
+                }
+
+
+                ViewData["CurrentFilter"] = Search;
+
+                var students = from s in _context.Product1s
+                               select s;
+                if (!string.IsNullOrEmpty(Search))
+                {
+                    students = students.Where(s => s.ProductName == Search);
+                }
+
+                //else if (!string.IsNullOrEmpty(Search))
+                //{
+                //    students = students.Where(s => s.Brand == Search);
+                //}
+                //else
+                //{
+
+                //}
+                switch (SortOrder)
+                {
+                    case "name_desc":
+                        students = students.OrderByDescending(s => s.ProductName);
+                        break;
+                    default:
+                        students = students.OrderBy(s => s.ProductName);
+                        break;
+                }
+                int pageSize = 3;
+                return View(await PaginatedList<Product1>.CreateAsync(students.AsNoTracking(), PageNumber ?? 1, pageSize));
             }
             else
             {
-                Search = CurrentFilter;
+                return RedirectToAction("Login", "Login");
             }
+        }
+        public async Task<IActionResult> Buynow( int? id)
+        {
+            var product1 = await _context.Product1s
+                    .Include(p => p.IdNavigation)
+                    .FirstOrDefaultAsync(m => m.ProductId == id);
 
-            ViewData["CurrentFilter"] = Search;
-
-            var students = from s in _context.Product1s
-                           select s;
-            if (!string.IsNullOrEmpty(Search))
-            {
-                students = students.Where(s => s.ProductName == Search );
-            }
-
-            //else if (!string.IsNullOrEmpty(Search))
-            //{
-            //    students = students.Where(s => s.Brand == Search);
-            //}
-            //else
-            //{
-
-            //}
-            switch (SortOrder)
-            {
-                case "name_desc":
-                    students = students.OrderByDescending(s => s.ProductName);
-                    break;
-                default:
-                    students = students.OrderBy(s => s.ProductName);
-                    break;
-            }
-            int pageSize = 3;
-            return View(await PaginatedList<Product1>.CreateAsync(students.AsNoTracking(), PageNumber ?? 1, pageSize));
+            HttpContext.Session.SetInt32("Productid", product1.ProductId);
+            HttpContext.Session.SetInt32("Price", product1.Price);
+         
+                return RedirectToAction("Create", "Cart");
+            
         }
 
 

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Demo.Models;
 
+
 namespace Project.Controllers
 {
     public class LoginController : Controller
@@ -25,6 +26,7 @@ namespace Project.Controllers
             if (result != null)
             {
                 HttpContext.Session.SetString("Username", result.UserName);
+                HttpContext.Session.SetInt32("Userid", result.UserId);
                 return RedirectToAction("Index", "Product");
             }
             else

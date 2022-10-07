@@ -52,25 +52,21 @@ namespace Demo.Models
 
             modelBuilder.Entity<Cart>(entity =>
             {
-                entity.ToTable("cart");
+                entity.ToTable("Cart");
 
                 entity.Property(e => e.CartId)
                     .ValueGeneratedNever()
                     .HasColumnName("Cart id");
 
-                entity.Property(e => e.ProductId).HasColumnName("Product id");
-
-                entity.Property(e => e.UserId).HasColumnName("User id");
-
                 entity.HasOne(d => d.Product)
                     .WithMany(p => p.Carts)
-                    .HasForeignKey(d => d.ProductId)
-                    .HasConstraintName("FK__cart__Product id__412EB0B6");
+                    .HasForeignKey(d => d.Productid)
+                    .HasConstraintName("FK__Cart__Productid__4E88ABD4");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Carts)
-                    .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("FK__cart__User id__4222D4EF");
+                    .HasForeignKey(d => d.Userid)
+                    .HasConstraintName("FK__Cart__Userid__4D94879B");
             });
 
             modelBuilder.Entity<Category>(entity =>

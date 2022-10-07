@@ -5,6 +5,14 @@
     //ViewData["Title"] = "Bike Bully";
     ViewBag.Username = @HttpContextAccesor.HttpContext.Session.GetString("Username");
     ViewBag.name = @HttpContextAccesor.HttpContext.Session.GetString("name");
+    if (ViewBag.Username != null)
+    {
+        Layout = "ULayout";
+    }
+    else
+    {
+        Layout = "ALayout";
+    }
 }
 
 @{
@@ -96,14 +104,14 @@
                     @*  <td>
                     @Html.DisplayFor(modelItem => item.IdNavigation)
                 </td>*@
-                    @*<td>
-            @Html.DisplayFor(modelItem => item.Password)
-            </td>
+                    <td>
+            @*@Html.DisplayFor(modelItem => item.Password)*@
+           @* </td>*@
             <td>
-            <a asp-action="Edit" asp-route-id="@item.StudentId">Edit</a> |
-            <a asp-action="Details" asp-route-id="@item.StudentId">Details</a> |
-            <a asp-action="Delete" asp-route-id="@item.StudentId">Delete</a>
-            </td>*@
+            <a asp-action="Buynow" asp-route-id="@item.ProductId">Buynow</a> |
+            <a asp-action="Details" asp-route-id="@item.ProductId">Details</a> |
+            @*<a asp-action="Delete" asp-route-id="@item.StudentId">Delete</a>*@
+            </td>
                 </tr>
             }
         </tbody>
@@ -170,7 +178,7 @@
                         <td>
                             @Html.DisplayFor(modelItem => item.Stock)
                         </td>
-                        @*<td>
+                       @* @*<td>
             @Html.DisplayFor(modelItem => item.CategoryId)
             </td>*@
                         @* <td>
@@ -182,11 +190,12 @@
                         @*<td>
             @Html.DisplayFor(modelItem => item.Password)
             </td>
-            <td>
-            <a asp-action="Edit" asp-route-id="@item.StudentId">Edit</a> |
-            <a asp-action="Details" asp-route-id="@item.StudentId">Details</a> |
-            <a asp-action="Delete" asp-route-id="@item.StudentId">Delete</a>
-            </td>*@
+            *@
+                    <td>
+            <a asp-action="Edit" asp-route-id="@item.ProductId">Edit</a> |
+            <a asp-action="Details" asp-route-id="@item.ProductId">Details</a> |
+            <a asp-action="Delete" asp-route-id="@item.ProductId">Delete</a>
+            </td>
                     </tr>
                 }
             </tbody>
