@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Demo.Models;
 using System.Security.Policy;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.AspNetCore.Http;
 
 namespace Demo.Controllers
 {
@@ -25,40 +26,59 @@ namespace Demo.Controllers
         // GET: Cart
         public async Task<IActionResult> Index()
         {
-            
+
             var bikeContext = _context.Carts.Include(c => c.Product).Include(c => c.User);
             return View(await bikeContext.ToListAsync());
 
         }
 
         // GET: Cart/Details/5
-        public async Task<IActionResult> Details(int? id)
+        [HttpPost]
+        public async Task<IActionResult> ProceedtoBuy()
         {
-            if (id == null || _context.Carts == null)
-            {
-                return NotFound();
-            }
+            var UserId = HttpContext.Session.GetInt32("Userid");
+            List<Cart> cart = (from i in _context.Carts where i.Userid == UserId select i).ToList();
+            List<OrderDetail> od = new List<OrderDetail>();
+            OrderMaster om = new OrderMaster();
 
-            var cart = await _context.Carts
-                .Include(c => c.Product)
-                .Include(c => c.User)
-                .FirstOrDefaultAsync(m => m.CartId == id);
-            if (cart == null)
+            om.Orderdate = DateTime.Today;
+            om.Userid = (int)UserId;
+            om.TotalAmount = 0;
+            foreach (var item in cart)
             {
-                return NotFound();
-            }
 
-            return View(cart);
+                om.TotalAmount += item.TotalAmount;
+            }
+            _context.Add(om);
+
+            _context.SaveChanges();
+            HttpContext.Session.SetInt32("Total", (int)om.TotalAmount);
+            foreach (var item in cart)
+            {
+                OrderDetail detail = new OrderDetail();
+                detail.Productid = item.Productid;
+                detail.TotalAmount = item.TotalAmount;
+                detail.OrderMasterid = om.OrderMasterid;
+                od.Add(detail);
+            }
+            _context.AddRange(od);
+            _context.SaveChanges();
+            _context.Carts.RemoveRange(cart);
+            _context.SaveChanges();
+
+            return RedirectToAction("GetPayment", new { id = om.OrderMasterid });
+
         }
 
         // GET: Cart/Create
+        [HttpGet]
         public IActionResult Create()
         {
+            Cart cart = new Cart();
             //ViewData["Productid"] = new SelectList(_context.Product1s, "ProductId", "ProductId");
             //ViewData["Userid"] = new SelectList(_context.User1s, "UserId", "UserId");
-            
-                return View();
-            
+
+            return View(cart);
         }
 
         // POST: Cart/Create
@@ -66,21 +86,37 @@ namespace Demo.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CartId,Quantity,TotalAmount")] Cart cart)
+        public async Task<IActionResult> Create(Cart cart)
         {
-            if (ModelState.IsValid)
+
+            cart.Userid = (int?)HttpContext.Session.GetInt32("Userid");
+            cart.Productid = (int)HttpContext.Session.GetInt32("Productid");
+            var id = (from i in _context.Carts
+                      where i.Userid == cart.Userid && i.Productid == cart.Productid
+                      select i).SingleOrDefault();
+            if (id == null)
             {
-                cart.Userid = (int?)HttpContext.Session.GetInt32("Userid");
-                cart.Productid = (int)HttpContext.Session.GetInt32("Productid");
                 int Amount = (int)HttpContext.Session.GetInt32("Price");
-              
-                    
-                    cart.TotalAmount = cart.Quantity * Amount;
-                    _context.Add(cart);
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
-                //    }
+                cart.TotalAmount = cart.Quantity * Amount;
+                _context.Add(cart);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+
             }
+            else
+            {
+                id.Quantity += cart.Quantity;
+                id.TotalAmount = id.Quantity * (from i in _context.Carts
+                                                where i.Productid == cart.Productid
+                                                select i.Product.Price).SingleOrDefault();
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            //_context.Add(cart);
+            //await _context.SaveChangesAsync();
+
+            //    }
+
             //ViewData["Productid"] = new SelectList(_context.Product1s, "ProductId", "ProductId", cart.Productid);
             //ViewData["Userid"] = new SelectList(_context.User1s, "UserId", "UserId", cart.Userid);
             return View(cart);
@@ -111,7 +147,7 @@ namespace Demo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("CartId,Quantity,TotalAmount,Userid,Productid")] Cart cart)
         {
-            if (id != cart.CartId)
+            if (id != cart.Id)
             {
                 return NotFound();
             }
@@ -129,7 +165,7 @@ namespace Demo.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CartExists(cart.CartId))
+                    if (!CartExists(cart.Id))
                     {
                         return NotFound();
                     }
@@ -156,7 +192,7 @@ namespace Demo.Controllers
             var cart = await _context.Carts
                 .Include(c => c.Product)
                 .Include(c => c.User)
-                .FirstOrDefaultAsync(m => m.CartId == id);
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (cart == null)
             {
                 return NotFound();
@@ -179,14 +215,45 @@ namespace Demo.Controllers
             {
                 _context.Carts.Remove(cart);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+        public IActionResult GetPayment(int id)
+        {
+            var OrderMaster = _context.OrderMasters.Find(id);
+            return View(OrderMaster);
+        }
+
+
+        [HttpPost]
+        public IActionResult GetPayment(OrderMaster m)
+        {
+
+
+            if (m.AmountPaid == m.TotalAmount)
+            {
+
+                _context.OrderMasters.Update(m);
+                _context.SaveChanges();
+                return RedirectToAction("Thankyou");
+            }
+            else
+            {
+                ViewBag.ErrorMessage = "amount not valid";
+                return View(m);
+            }
+
+        }
+        public IActionResult Thankyou()
+        {
+            return View();
         }
 
         private bool CartExists(int id)
         {
-          return _context.Carts.Any(e => e.CartId == id);
+            return _context.Carts.Any(e => e.Id == id);
         }
     }
 }
+

@@ -312,7 +312,7 @@ namespace Demo.Controllers
                 return RedirectToAction("Login", "Login");
             }
         }
-        public async Task<IActionResult> Buynow( int? id)
+        public async Task<IActionResult> Buynow( int id)
         {
             var product1 = await _context.Product1s
                     .Include(p => p.IdNavigation)

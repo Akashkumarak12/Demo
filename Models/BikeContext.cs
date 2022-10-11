@@ -19,6 +19,8 @@ namespace Demo.Models
         public virtual DbSet<Admi> Admis { get; set; } = null!;
         public virtual DbSet<Cart> Carts { get; set; } = null!;
         public virtual DbSet<Category> Categories { get; set; } = null!;
+        public virtual DbSet<OrderDetail> OrderDetails { get; set; } = null!;
+        public virtual DbSet<OrderMaster> OrderMasters { get; set; } = null!;
         public virtual DbSet<Product1> Product1s { get; set; } = null!;
         public virtual DbSet<User1> User1s { get; set; } = null!;
 
@@ -52,21 +54,19 @@ namespace Demo.Models
 
             modelBuilder.Entity<Cart>(entity =>
             {
-                entity.ToTable("Cart");
+                entity.ToTable("cart");
 
-                entity.Property(e => e.CartId)
-                    .ValueGeneratedNever()
-                    .HasColumnName("Cart id");
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.HasOne(d => d.Product)
                     .WithMany(p => p.Carts)
                     .HasForeignKey(d => d.Productid)
-                    .HasConstraintName("FK__Cart__Productid__4E88ABD4");
+                    .HasConstraintName("FK__cart__Productid__534D60F1");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Carts)
                     .HasForeignKey(d => d.Userid)
-                    .HasConstraintName("FK__Cart__Userid__4D94879B");
+                    .HasConstraintName("FK__cart__Userid__5165187F");
             });
 
             modelBuilder.Entity<Category>(entity =>
@@ -89,6 +89,33 @@ namespace Demo.Models
                     .HasMaxLength(50)
                     .IsUnicode(false)
                     .HasColumnName("Supplier Name");
+            });
+
+            modelBuilder.Entity<OrderDetail>(entity =>
+            {
+                entity.HasKey(e => e.Orderid);
+
+                entity.HasOne(d => d.OrderMaster)
+                    .WithMany(p => p.OrderDetails)
+                    .HasForeignKey(d => d.OrderMasterid)
+                    .HasConstraintName("FK__OrderDeta__Order__5812160E");
+
+                entity.HasOne(d => d.Product)
+                    .WithMany(p => p.OrderDetails)
+                    .HasForeignKey(d => d.Productid)
+                    .HasConstraintName("FK__OrderDeta__Produ__59063A47");
+            });
+
+            modelBuilder.Entity<OrderMaster>(entity =>
+            {
+                entity.ToTable("OrderMaster");
+
+                entity.Property(e => e.Orderdate).HasColumnType("date");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.OrderMasters)
+                    .HasForeignKey(d => d.Userid)
+                    .HasConstraintName("FK__OrderMast__Useri__59FA5E80");
             });
 
             modelBuilder.Entity<Product1>(entity =>
@@ -131,6 +158,10 @@ namespace Demo.Models
 
                 entity.Property(e => e.UserId).HasColumnName("User id");
 
+                entity.Property(e => e.Address)
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.EmailId)
                     .HasMaxLength(50)
                     .IsUnicode(false)
@@ -140,6 +171,10 @@ namespace Demo.Models
 
                 entity.Property(e => e.Password)
                     .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Pincode)
+                    .HasMaxLength(10)
                     .IsUnicode(false);
 
                 entity.Property(e => e.UserName)

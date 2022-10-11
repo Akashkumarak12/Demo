@@ -8,6 +8,7 @@ namespace Demo.Models
         public Product1()
         {
             Carts = new HashSet<Cart>();
+            OrderDetails = new HashSet<OrderDetail>();
         }
 
         public int ProductId { get; set; }
@@ -22,5 +23,6 @@ namespace Demo.Models
 
         public virtual Category? IdNavigation { get; set; }
         public virtual ICollection<Cart> Carts { get; set; }
+        public virtual ICollection<OrderDetail> OrderDetails { get; set; }
     }
 }

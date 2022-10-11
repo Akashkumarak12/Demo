@@ -8,6 +8,7 @@ namespace Demo.Models
         public User1()
         {
             Carts = new HashSet<Cart>();
+            OrderMasters = new HashSet<OrderMaster>();
         }
 
         public int UserId { get; set; }
@@ -15,7 +16,10 @@ namespace Demo.Models
         public int? MobileNo { get; set; }
         public string? EmailId { get; set; }
         public string? Password { get; set; }
+        public string? Address { get; set; }
+        public string? Pincode { get; set; }
 
         public virtual ICollection<Cart> Carts { get; set; }
+        public virtual ICollection<OrderMaster> OrderMasters { get; set; }
     }
 }
