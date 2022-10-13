@@ -14,13 +14,13 @@
     }
 }
 
-<h1>Details</h1>
+<h1>ProductDetails</h1>
 
 
     @if (ViewBag.Username != null)
     {
     <div>
-        <h4>Product1</h4>
+        
         <hr />
         <dl class="row">
             <dt class = "col-sm-2">
@@ -48,12 +48,12 @@
             <dd class = "col-sm-10">
                 @Html.DisplayFor(model => model.Price)
             </dd>
-            <dt class = "col-sm-2">
+            @*<dt class = "col-sm-2">
                 @Html.DisplayNameFor(model => model.Stock)
             </dt>
             <dd class = "col-sm-10">
                 @Html.DisplayFor(model => model.Stock)
-            </dd>
+            </dd>*@
             @* <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.CategoryId)
         </dt>
@@ -66,12 +66,12 @@
             <dd class = "col-sm-10">
                 @Html.DisplayFor(model => model.Description)
             </dd>
-            <dt class = "col-sm-2">
+          @*  <dt class = "col-sm-2">
                 @Html.DisplayNameFor(model => model.IdNavigation)
-            </dt>
-            <dd class = "col-sm-10">
+            </dt>*@
+          @*  <dd class = "col-sm-10">
                 @Html.DisplayFor(model => model.IdNavigation.Id)
-            </dd>
+            </dd>*@
         </dl>
         </div>
         <div>
@@ -82,7 +82,7 @@
     else
     {
     <div>
-        <h4>Product1</h4>
+       
         <hr />
         <dl class="row">
             <dt class="col-sm-2">

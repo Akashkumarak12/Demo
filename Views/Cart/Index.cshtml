@@ -8,7 +8,7 @@
 
 }
 
-<h1>Index</h1>
+<h1>Cart</h1>
 
 
 <table class="table">
@@ -55,7 +55,7 @@
            
            
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit Quantity</a> |
+               @* <a asp-action="Edit" asp-route-id="@item.Id">Edit Quantity</a> |*@
                 @*<a asp-action="ProceedtoBuy" asp-route-id="@item.Id">ProceedToBuy</a> |*@
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
@@ -63,6 +63,14 @@
         }
 }
     </tbody>
+    @if(ViewBag.ErrorMessage!= null)
+    {
+        <div class="text-danger">
+            @ViewBag.ErrorMessage
+        </div>
+    }
+    else
+    {
     <form asp-controller="Cart" asp-action="ProceedToBuy">
 
         <div class="form-group">
@@ -70,4 +78,5 @@
         </div>
 
     </form>
+    }
 </table>

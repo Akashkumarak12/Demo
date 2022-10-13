@@ -30,6 +30,7 @@ namespace Demo.Controllers
             if (ViewBag.UserName != null)
             {
                 var bikeContext = _context.Product1s.Include(p => p.IdNavigation);
+                ViewBag.ErrorMessage = "Out of Stock";
                 return View(await bikeContext.ToListAsync());
             }
             else if (ViewBag.name != null)
@@ -319,7 +320,7 @@ namespace Demo.Controllers
                     .FirstOrDefaultAsync(m => m.ProductId == id);
 
             HttpContext.Session.SetInt32("Productid", product1.ProductId);
-            HttpContext.Session.SetInt32("Price", product1.Price);
+            HttpContext.Session.SetInt32("Price", (int)product1.Price);
          
                 return RedirectToAction("Create", "Cart");
             

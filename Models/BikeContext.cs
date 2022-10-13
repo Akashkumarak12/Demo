@@ -104,6 +104,11 @@ namespace Demo.Models
                     .WithMany(p => p.OrderDetails)
                     .HasForeignKey(d => d.Productid)
                     .HasConstraintName("FK__OrderDeta__Produ__59063A47");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.OrderDetails)
+                    .HasForeignKey(d => d.Userid)
+                    .HasConstraintName("FK__OrderDeta__Useri__5AEE82B9");
             });
 
             modelBuilder.Entity<OrderMaster>(entity =>

@@ -81,11 +81,21 @@
                    @* <td>
                         @Html.DisplayFor(modelItem => item.IdNavigation.Id)
                     </td>*@
-                    <td>
-                        <a asp-action="Buynow" asp-route-id="@item.ProductId">Buy Now</a> |
+                    @if (item.Stock == 0)
+                    {
+                        <td>
+                            <div class="text-danger">@ViewBag.ErrorMessage</div>
+                        </td>
+                    }
+                   else
+                    { 
+                        <td>
+                            <a asp-action="Buynow" asp-route-id="@item.ProductId">Buy</a> |
                         <a asp-action="Details" asp-route-id="@item.ProductId">Details</a> |
                         @*<a asp-action="Delete" asp-route-id="@item.ProductId">Delete</a>*@
-                    </td>
+                        </td>
+                    }
+                   
                 </tr>
             }
         </tbody>

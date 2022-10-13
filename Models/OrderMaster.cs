@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Demo.Models
 {
@@ -11,10 +12,11 @@ namespace Demo.Models
         }
 
         public int OrderMasterid { get; set; }
+        [DataType(DataType.Date)]
         public DateTime Orderdate { get; set; }
-        public int? TotalAmount { get; set; }
+        public int TotalAmount { get; set; }
         public int CardNumber { get; set; }
-        public int AmountPaid { get; set; }
+        public int? AmountPaid { get; set; }
         public int? Userid { get; set; }
 
         public virtual User1? User { get; set; }

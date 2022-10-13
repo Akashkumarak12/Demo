@@ -26,10 +26,15 @@ namespace Demo.Controllers
         // GET: Cart
         public async Task<IActionResult> Index()
         {
-
+            int id = (int)HttpContext.Session.GetInt32("Userid");
             var bikeContext = _context.Carts.Include(c => c.Product).Include(c => c.User);
+            List<Cart> cart = (from i in _context.Carts where i.Userid == id select i).ToList();
+            if (cart.Count == 0)
+            {
+                ViewBag.ErrorMessage = "Cart is Empty";
+                return View(await bikeContext.ToListAsync());
+            }
             return View(await bikeContext.ToListAsync());
-
         }
 
         // GET: Cart/Details/5
@@ -39,6 +44,7 @@ namespace Demo.Controllers
             var UserId = HttpContext.Session.GetInt32("Userid");
             List<Cart> cart = (from i in _context.Carts where i.Userid == UserId select i).ToList();
             List<OrderDetail> od = new List<OrderDetail>();
+           
             OrderMaster om = new OrderMaster();
 
             om.Orderdate = DateTime.Today;
@@ -47,7 +53,7 @@ namespace Demo.Controllers
             foreach (var item in cart)
             {
 
-                om.TotalAmount += item.TotalAmount;
+                om.TotalAmount += (int)item.TotalAmount;
             }
             _context.Add(om);
 
@@ -57,14 +63,15 @@ namespace Demo.Controllers
             {
                 OrderDetail detail = new OrderDetail();
                 detail.Productid = item.Productid;
+                detail.Userid=item.Userid;
                 detail.TotalAmount = item.TotalAmount;
                 detail.OrderMasterid = om.OrderMasterid;
                 od.Add(detail);
             }
             _context.AddRange(od);
             _context.SaveChanges();
-            _context.Carts.RemoveRange(cart);
-            _context.SaveChanges();
+          
+
 
             return RedirectToAction("GetPayment", new { id = om.OrderMasterid });
 
@@ -77,7 +84,7 @@ namespace Demo.Controllers
             Cart cart = new Cart();
             //ViewData["Productid"] = new SelectList(_context.Product1s, "ProductId", "ProductId");
             //ViewData["Userid"] = new SelectList(_context.User1s, "UserId", "UserId");
-
+            cart.Quantity = 1;
             return View(cart);
         }
 
@@ -125,12 +132,13 @@ namespace Demo.Controllers
         // GET: Cart/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            
             if (id == null || _context.Carts == null)
             {
                 return NotFound();
             }
 
-            var cart = await _context.Carts.FindAsync(id);
+            var cart = _context.Carts.FindAsync(id);
             if (cart == null)
             {
                 return NotFound();
@@ -145,7 +153,7 @@ namespace Demo.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CartId,Quantity,TotalAmount,Userid,Productid")] Cart cart)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,CartId,Quantity,TotalAmount,Userid,Productid")]Cart cart)
         {
             if (id != cart.Id)
             {
@@ -176,8 +184,8 @@ namespace Demo.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["Productid"] = new SelectList(_context.Product1s, "ProductId", "ProductId", cart.Productid);
-            ViewData["Userid"] = new SelectList(_context.User1s, "UserId", "UserId", cart.Userid);
+            //ViewData["Productid"] = new SelectList(_context.Product1s, "ProductId", "ProductId", cart.Productid);
+            //ViewData["Userid"] = new SelectList(_context.User1s, "UserId", "UserId", cart.Userid);
             return View(cart);
         }
 
@@ -233,9 +241,26 @@ namespace Demo.Controllers
 
             if (m.AmountPaid == m.TotalAmount)
             {
-
+                var UserId = HttpContext.Session.GetInt32("Userid");
+                List<Cart> cart = (from i in _context.Carts where i.Userid == UserId select i).ToList();
+                var pid= (int)HttpContext.Session.GetInt32("Productid");
+               
+                Product1 p = new Product1();
+                var s = (from i in _context.Product1s
+                             where i.ProductId == pid
+                             select i).SingleOrDefault();
+                var c = (from t in _context.Carts
+                         where t.Productid == pid
+                         select t).SingleOrDefault();
                 _context.OrderMasters.Update(m);
                 _context.SaveChanges();
+                s.Stock -= c.Quantity;
+                _context.Product1s.Update(s);
+                _context.SaveChanges();
+                _context.Carts.RemoveRange(cart);
+                _context.SaveChanges();
+
+
                 return RedirectToAction("Thankyou");
             }
             else
@@ -245,6 +270,7 @@ namespace Demo.Controllers
             }
 
         }
+    
         public IActionResult Thankyou()
         {
             return View();

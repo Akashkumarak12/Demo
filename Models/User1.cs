@@ -8,6 +8,7 @@ namespace Demo.Models
         public User1()
         {
             Carts = new HashSet<Cart>();
+            OrderDetails = new HashSet<OrderDetail>();
             OrderMasters = new HashSet<OrderMaster>();
         }
 
@@ -20,6 +21,7 @@ namespace Demo.Models
         public string? Pincode { get; set; }
 
         public virtual ICollection<Cart> Carts { get; set; }
+        public virtual ICollection<OrderDetail> OrderDetails { get; set; }
         public virtual ICollection<OrderMaster> OrderMasters { get; set; }
     }
 }
