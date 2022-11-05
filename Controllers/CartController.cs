@@ -239,35 +239,39 @@ namespace Demo.Controllers
         {
 
 
-            if (m.AmountPaid == m.TotalAmount)
-            {
+            //if (m.AmountPaid == m.TotalAmount)
+            
+                m.AmountPaid = m.TotalAmount;
                 var UserId = HttpContext.Session.GetInt32("Userid");
                 List<Cart> cart = (from i in _context.Carts where i.Userid == UserId select i).ToList();
                 var pid= (int)HttpContext.Session.GetInt32("Productid");
                
                 Product1 p = new Product1();
-                var s = (from i in _context.Product1s
-                             where i.ProductId == pid
-                             select i).SingleOrDefault();
-                var c = (from t in _context.Carts
-                         where t.Productid == pid
-                         select t).SingleOrDefault();
+              
+                
                 _context.OrderMasters.Update(m);
                 _context.SaveChanges();
-                s.Stock -= c.Quantity;
-                _context.Product1s.Update(s);
+                foreach (var j in cart)
+                {
+                    var s = (from i in _context.Product1s
+                             where i.ProductId ==j.Productid
+                             select i).SingleOrDefault();
+                    s.Stock -= j.Quantity;
+                    _context.Product1s.Update(s);
+                }
+                
                 _context.SaveChanges();
                 _context.Carts.RemoveRange(cart);
                 _context.SaveChanges();
 
 
                 return RedirectToAction("Thankyou");
-            }
-            else
-            {
-                ViewBag.ErrorMessage = "amount not valid";
-                return View(m);
-            }
+            
+            //else
+            //{
+            //    ViewBag.ErrorMessage = "amount not valid";
+            //    return View(m);
+            //}
 
         }
     
