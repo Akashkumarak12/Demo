@@ -85,6 +85,9 @@ namespace Demo.Controllers
             //ViewData["Productid"] = new SelectList(_context.Product1s, "ProductId", "ProductId");
             //ViewData["Userid"] = new SelectList(_context.User1s, "UserId", "UserId");
             cart.Quantity = 1;
+            var ProductName = HttpContext.Session.GetString("PName");
+            var ProductImage = HttpContext.Session.GetString("PImage");
+            var Price = HttpContext.Session.GetInt32("Price");
             return View(cart);
         }
 
@@ -244,7 +247,7 @@ namespace Demo.Controllers
                 m.AmountPaid = m.TotalAmount;
                 var UserId = HttpContext.Session.GetInt32("Userid");
                 List<Cart> cart = (from i in _context.Carts where i.Userid == UserId select i).ToList();
-                var pid= (int)HttpContext.Session.GetInt32("Productid");
+                //var pid= (int)HttpContext.Session.GetInt32("Productid");
                
                 Product1 p = new Product1();
               

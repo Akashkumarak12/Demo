@@ -14,6 +14,7 @@ namespace Demo.Models
         }
 
         public int ProductId { get; set; }
+        [Display(Name = "Product Name")]
         public string? ProductName { get; set; }
         public string? Image { get; set; }
         public string? Brand { get; set; }
@@ -22,7 +23,7 @@ namespace Demo.Models
         public int? CategoryId { get; set; }
         public string? Description { get; set; }
         public int? Id { get; set; }
-        [Display(Name = "VendorId")]
+        [Display(Name = "Vendor Id")]
         public virtual Category? IdNavigation { get; set; }
         public virtual ICollection<Cart> Carts { get; set; }
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }

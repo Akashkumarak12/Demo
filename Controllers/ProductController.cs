@@ -321,8 +321,10 @@ namespace Demo.Controllers
 
             HttpContext.Session.SetInt32("Productid", product1.ProductId);
             HttpContext.Session.SetInt32("Price", (int)product1.Price);
-         
-                return RedirectToAction("Create", "Cart");
+            HttpContext.Session.SetString("PName", product1.ProductName);
+            HttpContext.Session.SetString("PImage", product1.Image);
+
+            return RedirectToAction("Create", "Cart");
             
         }
 

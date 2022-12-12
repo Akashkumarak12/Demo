@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Xml.Linq;
 
 namespace Demo.Models
 {
@@ -12,6 +14,7 @@ namespace Demo.Models
 
         public int Id { get; set; }
         public string? Brand { get; set; }
+        [Display(Name = "Supplier Name")]
         public string? SupplierName { get; set; }
         public string? Location { get; set; }
 

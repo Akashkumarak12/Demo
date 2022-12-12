@@ -2,9 +2,10 @@
 
 @{
     ViewData["Title"] = "Get Payment";
+    Layout = "ULayout";
 }
 
-<h1>Get Payment</h1>
+
 
 <h4>Enter Payment Details</h4>
 <hr />
@@ -12,6 +13,15 @@
 {
     <div class="text-danger">@ViewBag.ErrorMessage</div>
 }
+@*<style>
+    body {
+        background-image: url('/images/Background1.jpg');
+        background-position: top;
+        /* background-repeat: no-repeat;*/
+        /*background-attachment:fixed;
+                    background-size:100% 100%;*/
+    }
+</style>*@
 
 <div class="row">
     <div class="col-md-4">
@@ -44,7 +54,7 @@
 
             <div class="form-group">
 
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Pay" class="btn btn-primary" />
             </div>
         </form>
     </div>

@@ -14,6 +14,15 @@
         Layout = "ALayout";
     }
 }
+@*<style>
+    body {
+        background-image: url('/images/Background1.jpg');
+        background-position: top;
+        /* background-repeat: no-repeat;*/
+        /*background-attachment:fixed;
+                    background-size:100% 100%;*/
+    }
+</style>*@
 
 @{
     ViewData["Title"] = "SearchProduct";
@@ -27,7 +36,7 @@
 @using (Html.BeginForm("SearchStudent", "Product", FormMethod.Post))
 {
     <div>
-        Search by ProductName @Html.TextBox("Search")
+        Search by Product Name @Html.TextBox("Search")
         <input id="Submit" type="submit" value="Search" />
         <a asp-action="SearchStudent">Back to details</a>
     </div>
@@ -42,7 +51,7 @@
                 Student Id
             </th>*@
                 <th>
-                    <a asp-action="SearchStudent" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-CurrentFilter="@ViewData["CurrentFilter"]">ProductName</a>
+                    <a asp-action="SearchStudent" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-CurrentFilter="@ViewData["CurrentFilter"]">Product Name</a>
                 </th>
                 @*  <th>
                ProductName
@@ -108,7 +117,7 @@
             @*@Html.DisplayFor(modelItem => item.Password)*@
            @* </td>*@
             <td>
-            <a asp-action="Buynow" asp-route-id="@item.ProductId">Buynow</a> |
+            <a asp-action="Buynow" asp-route-id="@item.ProductId">Buy now</a> |
             <a asp-action="Details" asp-route-id="@item.ProductId">Details</a> |
             @*<a asp-action="Delete" asp-route-id="@item.StudentId">Delete</a>*@
             </td>
@@ -125,7 +134,7 @@
             Student Id
             </th>*@
                     <th>
-                        <a asp-action="SearchStudent" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-CurrentFilter="@ViewData["CurrentFilter"]">ProductName</a>
+                        <a asp-action="SearchStudent" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-CurrentFilter="@ViewData["CurrentFilter"]">Product Name</a>
                     </th>
                     @*  <th>
             ProductName
